@@ -1,4 +1,10 @@
 package org.educa.dao;
 
-public class ProductoDAO {
+import generated.Productos;
+import jakarta.xml.bind.JAXBException;
+
+import java.io.File;
+
+public interface ProductoDAO {
+    Productos readFile(File file) throws JAXBException;
 }
