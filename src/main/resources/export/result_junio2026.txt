@@ -1,0 +1,6 @@
+Fecha: junio2026
+NumeroDeVehiculos: 5
+BeneficioTotal: 1223.72280
+Ruta del Fichero: C:\Users\later\OneDrive\Escritorio\Practica_acc\ProbandoAccesoDatos\src\main\resources\xml\inventario_junio2026.xml
+Nombre del Fichero: inventario_junio2026.xml
+Tamaño del Fichero: 3903 bytes

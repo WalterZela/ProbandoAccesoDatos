@@ -6,7 +6,11 @@ import generated.Producto;
 import generated.Productos;
 import org.educa.dao.ProductoDAO;
 import org.educa.dao.ProductoDAOImpl;
+import org.educa.entity.SummaryEntity;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +21,7 @@ import java.text.ParseException;
 
 public class ProductoService {
     private ProductoDAO productoDAO = new ProductoDAOImpl();
+
     public List<ProductoEntity> readFile(String fileXml) throws JAXBException {
 
         File file = new File(fileXml);
@@ -52,12 +57,54 @@ public class ProductoService {
         return lista;
     }
 
-    public void exportSummary(String path, String fileXml) throws JAXBException, IOException {
-        //TODO: Implementar
 
+    public void exportSummary(String path, String fileXml) throws JAXBException, IOException {
+        File file = new File(fileXml);
+
+        // Leemos los productos del XML
+        List<ProductoEntity> productos = readFile(fileXml);
+
+        // Calculamos el beneficio total
+        BigDecimal totalProfit = BigDecimal.ZERO;
+
+        for (ProductoEntity producto : productos) {
+            totalProfit = totalProfit.add(producto.getProfit());
+        }
+
+        // Obtenemos el nombre del periodo
+        String nombreFichero = file.getName().replace(".xml", "");
+        String nombre = nombreFichero.replace("inventario_", "");
+
+        // Creamos el objeto resumen
+        SummaryEntity summary = new SummaryEntity(
+                nombre,
+                productos.size(),
+                totalProfit,
+                file.getAbsolutePath(),
+                file.getName(),
+                file.length()
+        );
+
+        // Creamos la carpeta de exportación si no existe
+        File directorio = new File(path);
+
+        if (!directorio.exists()) {
+            directorio.mkdirs();
+        }
+
+        // Creamos el fichero TXT
+        File ficheroResumen = new File(path + "result_" + nombre + ".txt");
+
+        try (FileWriter fileWriter = new FileWriter(ficheroResumen);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+
+            bufferedWriter.write(summary.toPrint());
+        }
     }
+
 
     public void exportExcel(String path, String fileXml) throws JAXBException, IOException, ParseException {
         //TODO: Implementar
     }
 }
+
